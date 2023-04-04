@@ -1,0 +1,539 @@
+﻿use TTTA
+
+CREATE FUNCTION AUTO_AccID_Adm()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(AccID_Adm) FROM ACCOUNTS_ADMIN) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(AccID_Adm, 3)) FROM ACCOUNTS_ADMIN
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'AD00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'AD0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.ACCOUNTS_ADMIN
+(
+	AccID_Adm char(5) PRIMARY KEY CONSTRAINT AccID_Adm DEFAULT DBO.AUTO_AccID_Adm(),
+	username char(100) NOT NULL UNIQUE,
+	pass char(100) NOT NULL,
+	NgayDK DATE NULL,
+)
+INSERT INTO ACCOUNTS_ADMIN(username, pass, NgayDK) VALUES 
+('admin1','passadmin1', '2020-4-1')
+INSERT INTO ACCOUNTS_ADMIN(username, pass, NgayDK) VALUES 
+('admin2','passadmin2', '2022-10-20')
+select *From ACCOUNTS_ADMIN
+-------------
+CREATE FUNCTION AUTO_AccID_Stu()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(AccID_Stu) FROM ACCOUNTS_STUDENT) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(AccID_Stu, 3)) FROM ACCOUNTS_STUDENT
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'ST00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'ST0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.ACCOUNTS_STUDENT
+(
+	AccID_Stu char(5) PRIMARY KEY CONSTRAINT AccID_Stu DEFAULT dbo.AUTO_AccID_Stu(),
+	username char(100) NOT NULL UNIQUE,
+	pass char(100) NOT NULL,
+	NgayDK DATE NULL
+)
+INSERT INTO ACCOUNTS_STUDENT(username, pass, NgayDK) VALUES 
+('student1','passstudent1', '2022-5-21')
+INSERT INTO ACCOUNTS_STUDENT(username, pass, NgayDK) VALUES 
+('student2','passstudent2', '2021-3-14')
+select *From ACCOUNTS_STUDENT
+-----------
+CREATE FUNCTION AUTO_AccID_Tea()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(AccID_Tea) FROM ACCOUNTS_TEACHER) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(AccID_Tea, 3)) FROM ACCOUNTS_TEACHER
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'TE00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'TE0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.ACCOUNTS_TEACHER
+(
+	AccID_Tea char(5) PRIMARY KEY CONSTRAINT AccID_Tea DEFAULT dbo.AUTO_AccID_Tea(),
+	username char(100) NOT NULL UNIQUE,
+	pass char(100) NOT NULL,
+	NgayDK DATE NULL,
+)
+INSERT INTO ACCOUNTS_TEACHER(username, pass, NgayDK) VALUES 
+('teacher1','passteacher1', '2020-9-12')
+INSERT INTO ACCOUNTS_TEACHER(username, pass, NgayDK) VALUES 
+('teacher2','passteacher2', '2021-12-5')
+select *from ACCOUNTS_TEACHER
+----------
+CREATE FUNCTION AUTO_AccID_NV()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(AccID_NV) FROM ACCOUNTS_NHANVIEN) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(AccID_NV, 3)) FROM ACCOUNTS_NHANVIEN
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'ID00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'ID0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.ACCOUNTS_NHANVIEN
+(
+	AccID_NV char(5) PRIMARY KEY CONSTRAINT AccID_NV DEFAULT dbo.AUTO_AccID_NV(),
+	username char(100) NOT NULL UNIQUE,
+	pass char(100) NOT NULL,
+	NgayDK DATE NULL,
+)
+INSERT INTO ACCOUNTS_NHANVIEN(username, pass, NgayDK) VALUES 
+('nhanvien1','passnhanvien1', '2020-9-12')
+INSERT INTO ACCOUNTS_NHANVIEN(username, pass, NgayDK) VALUES 
+('nhanvien2','passnhanvien2', '2020-9-12')
+
+--Các loại phiếu thu
+CREATE TABLE dbo.LOAIPHIEUTHU
+(
+	LoaiPhieuThu nvarchar(50) PRIMARY KEY
+)
+INSERT INTO LOAIPHIEUTHU VALUES (N'Học phí'), (N'Mua khóa học')
+
+--Các loại phiếu chi
+CREATE TABLE dbo.LOAIPHIEUCHI
+(
+	LoaiPhieuChi nvarchar(50) PRIMARY KEY
+)
+INSERT INTO LOAIPHIEUTHU VALUES (N'Học bổng'), (N'Thưởng'), (N'Trợ cấp'), (N'Lương tháng')
+
+--Khóa học
+CREATE TABLE dbo.KHOAHOC
+(
+	MaKH char(5) PRIMARY KEY CONSTRAINT MaKH DEFAULT DBO.AUTO_MaKH(),
+	TenKH nvarchar(100)
+)
+DROP TABLE KHOAHOC
+CREATE FUNCTION AUTO_MaKH()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(MaKH) FROM KHOAHOC) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(MaKH, 3)) FROM KHOAHOC
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'KH00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'KH0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+INSERT INTO KHOAHOC(TenKH) VALUES (N'Anh Văn Cơ Bản')
+INSERT INTO KHOAHOC(TenKH) VALUES(N'Giao Tiếp Cơ Bản')
+INSERT INTO KHOAHOC(TenKH) VALUES(N'Anh Văn Nâng Cao')
+INSERT INTO KHOAHOC(TenKH) VALUES(N'Toeic Cơ Bản')
+INSERT INTO KHOAHOC(TenKH) VALUES(N'Ielts Cơ Bản')
+select *from KHOAHOC
+
+--Phòng học
+CREATE TABLE dbo.PHONGHOC
+(	
+	Phong char(5) PRIMARY KEY,
+)
+INSERT INTO PHONGHOC(Phong) VALUES ('A1')
+INSERT INTO PHONGHOC(Phong) VALUES ('A2')
+INSERT INTO PHONGHOC(Phong) VALUES ('A3')
+INSERT INTO PHONGHOC(Phong) VALUES ('B1')
+INSERT INTO PHONGHOC(Phong) VALUES ('B2')
+INSERT INTO PHONGHOC(Phong) VALUES ('C1')
+INSERT INTO PHONGHOC(Phong) VALUES ('C2')
+INSERT INTO PHONGHOC(Phong) VALUES ('C3')
+INSERT INTO PHONGHOC(Phong) VALUES ('D1')
+select *from PHONGHOC
+
+--các mon học của mỗi khóa học
+CREATE TABLE dbo.MONHOC
+(	
+	MaKH char(5) NOT NULL, --tham chieu toi KHOAHOC.MaKH
+	MaMon char(5) NOT NULL,
+	TenMon nvarchar(100) NOT NULL,
+	SoBuoiTrongTuan char(2),
+	HocPhi int,
+	DiemTBQuaMon char(10),
+	CONSTRAINT PK_MONHOC PRIMARY KEY (MaMon),
+	CONSTRAINT FK_MONHOC FOREIGN KEY (MaKH) REFERENCES KHOAHOC(MaKH)
+)
+select *from MONHOC
+INSERT INTO MONHOC(MaKH, MaMon, TenMon, SoBuoiTrongTuan, HocPhi, DiemTBQuaMon) VALUES
+('KH001', 'MH001', N'Anh Văn Cơ Bản 1', '2', '350000', '8.0'),
+('KH001', 'MH002', N'Anh Văn Cơ Bản 2', '2', '450000', '8.0'),
+('KH001', 'MH003', N'Anh Văn Cơ Bản 3', '3', '500000', '8.0'),
+('KH002', 'MH004', N'Giao Tiếp Cơ Bản 1', '2', '350000', '8.0'),
+('KH002', 'MH005', N'Giao Tiếp Cơ Bản 2', '2', '450000', '8.0'),
+('KH003', 'MH006', N'Anh Văn Nâng Cao 1', '2', '400000', '8.0'),
+('KH003', 'MH007', N'Anh Văn Nâng Cao 2', '2', '450000', '8.0'),
+('KH004', 'MH008', N'Toeic Cơ Bản 1', '2', '350000', '8.0'),
+('KH005', 'MH009', N'Ielts Cơ Bản 1', '2', '450000', '8.0'),
+('KH005', 'MH010', N'Ielts Cơ Bản 2', '2', '350000', '8.0')
+
+--Lớp học
+CREATE FUNCTION AUTO_MaLop()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(MaLop) FROM LOPHOC) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(MaLop, 3)) FROM LOPHOC
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'CL00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'CL0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.LOPHOC
+(
+	MaLop char(5) PRIMARY KEY CONSTRAINT MaLop DEFAULT dbo.AUTO_MaLop(),
+	MaMon char(5) NOT NULL, --tham chieu toi MONHOC.MaMon
+	Phong char(5) NOT NULL, --tham chieu toi PHONGHOC.Phong
+	GiangVien char(5),--tham chieu toi GIANGVIEN.GvID
+	SoHocVien char(3),
+	NgayBatDau DATE,
+	NgayKetThuc DATE,
+	CONSTRAINT FK_LOPHOC_MaMon FOREIGN KEY (MaMon) REFERENCES MONHOC(MaMon),
+	CONSTRAINT FK_LOPHOC_Phong FOREIGN KEY (Phong) REFERENCES PHONGHOC(Phong),
+	CONSTRAINT FK_LOPHOC_GiangVien FOREIGN KEY (GiangVien) REFERENCES GIANGVIEN(GvID)
+)
+drop FUNCTION AUTO_MaLop
+drop table LOPHOC
+select *from GIANGVIEN
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH001', 'A1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH001', 'B1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH002', 'A1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH003', 'A3', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH005', 'D1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH004', 'C1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH004', 'C2', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH006', 'A2', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH007', 'C3', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH008', 'B1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH009', 'D1', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH010', 'A2', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH010', 'B2', 'GV001', '50', '2023-1-1', '2023-2-1')
+INSERT INTO LOPHOC(MaMon, Phong, GiangVien, SoHocVien, NgayBatDau, NgayKetThuc) VALUES
+('MH007', 'C2', 'GV001', '50', '2023-1-1', '2023-2-1')
+select *from LOPHOC
+
+
+-----------------HOC VIEN-------------------
+--thong tin học viên
+CREATE TABLE dbo.STUDENT
+(
+	HVID CHAR(5) PRIMARY KEY CONSTRAINT HVID DEFAULT DBO.AUTO_HVID(),
+	--foreign key -> ACC.username
+	ACCID char(5) NOT NULL UNIQUE,
+	HOTEN NVARCHAR(100) NOT NULL,
+	GIOITINH NVARCHAR(20) NULL,
+	NGAYSINH DATE NULL,
+	DIACHI NVARCHAR(4000) NULL,
+	SDT CHAR(20) NULL,
+	CMND CHAR(20) NULL,
+	EMAIL CHAR(100) NULL,
+	AVATAR IMAGE NULL,
+	TienTaiKhoan int NULL,
+	CONSTRAINT FK_STUDENT FOREIGN KEY (ACCID) REFERENCES ACCOUNTS_STUDENT(AccID_Stu)
+)
+CREATE FUNCTION AUTO_HVID()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(HVID) FROM STUDENT) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(HVID, 3)) FROM STUDENT
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'HV00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'HV0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+INSERT INTO STUDENT(ACCID, HOTEN, GIOITINH, NGAYSINH, DIACHI, SDT, EMAIL, TienTaiKhoan) VALUES
+('ST001', N'Nguyễn Tấn Lâm', N'Nam', '2003-2-1', N'Quãng Ngãi', '0935434907', 'laam@gmail.com', '100000')
+INSERT INTO STUDENT(ACCID, HOTEN, GIOITINH, NGAYSINH, DIACHI, SDT, EMAIL, TienTaiKhoan) VALUES
+('ST002', N'Nguyễn Thị Hòa', N'Nữ', '2005-5-11', N'Hồ Chí Minh', '093351507', 'hoa@gmail.com', '170000')
+select *from STUDENT
+
+--người thân của học viên
+CREATE TABLE dbo.THANNHAN
+(
+	HVID CHAR(5),
+	TenNguoiThan nvarchar(100),
+	SDT char(11),
+	QuanHe nvarchar(50),
+	CONSTRAINT PK_THANNHAN PRIMARY KEY (HVID, TenNguoiThan),
+	CONSTRAINT FK_THANNHAN FOREIGN KEY (HVID) REFERENCES STUDENT(HVID)
+)
+select *from THANNHAN
+INSERT INTO THANNHAN(HVID, TenNguoiThan, SDT, QuanHe) VALUES
+('HV001', N'Nguyên Văn Hùng', '0924627452', N'Ba'),
+('HV001', N'Trần Thị Thương', '0936827156', N'Mẹ'),
+('HV002', N'Trần Tấn Kiệt', '0921247975', N'Ba')
+
+--Các loại trạng thái 
+CREATE TABLE dbo.TRANGTHAI
+(
+	TRANGTHAI NVARCHAR(50) PRIMARY KEY --Hoan thanh/Chua hoan thanh
+)
+INSERT INTO TRANGTHAI VALUES
+(N'Hoàn thành'),
+('Chưa hoàn thành')
+
+--Danh sách lớp đã đki của học viên 
+CREATE TABLE dbo.DANGKILOP
+(
+	MaLop char(5),
+	HVID char(5),--tham chieu den STUDENT		
+	CONSTRAINT PK_DANGKILOP PRIMARY KEY (MaLop, HVID),
+	CONSTRAINT FK_DANGKILOP_MaLop FOREIGN KEY (MaLop) REFERENCES LOPHOC(MaLop),
+	CONSTRAINT FK_DANGKILOP_HVID FOREIGN KEY (HVID) REFERENCES STUDENT(HVID)
+)
+drop table DANGKILOP
+INSERT INTO DANGKILOP(MaLop, HVID) VALUES
+('CL001','HV001'),
+('CL001','HV002'),
+('CL003','HV002'),
+('CL004','HV001'),
+('CL005','HV001'),
+('CL010','HV002'),
+('CL013','HV002')
+select *from DANGKILOP
+
+--Các đợt thi
+CREATE TABLE dbo.DOTTHI
+(
+	DotThi nvarchar(50) PRIMARY KEY --giữa kì và cuối kì
+)
+INSERT INTO DOTTHI VALUES (N'Giữa kì'), (N'Cuối kì')
+
+--Bảng điểm thi các đợt
+CREATE TABLE dbo.DIEMTHI --cho cả giữa kì và cuối kì 
+(
+	HVID char(5),--tham chieu toi STUDEN.HSID
+	MaLop char(5),--ThamChieu toi LOPHOC.MaLop
+	DotThi nvarchar(50),--tham chiieu toi DOTTHI.DotThi
+	DiemNghe char(10),
+	DiemNoi char(10),
+	DiemDoc char(10), 
+	DiemViet char(10),
+	CONSTRAINT PK_DIEMGIUAKY PRIMARY KEY (HVID, MaLop, DotThi),
+	CONSTRAINT FK_DIEMTHI_HVID FOREIGN KEY (HVID) REFERENCES STUDENT(HVID),
+	CONSTRAINT FK_DIEMTHI_MaLop FOREIGN KEY (MaLop) REFERENCES LOPHOC(MaLop),
+	CONSTRAINT FK_DIEMTHI_DotThi FOREIGN KEY (DotThi) REFERENCES DOTTHI(DotThi)
+	--Muốn tính Điểm TB cả môn -> tính TB của GK và CK -> Tính TB cả môn 
+)
+drop table DIEMTHI
+select *from DIEMTHI
+INSERT INTO DIEMTHI(MaLop,HVID, DotThi, DiemNghe, DiemNoi, DiemDoc, DiemViet) VALUES
+('CL001','HV001', N'Giữa kì', '6.0', '6.5', '7.5', '8.0'),
+('CL001','HV002', N'Giữa kì', '5.0', '6.5', '6.5', '7.5'),
+('CL003','HV002', N'Giữa kì', '6.5', '7.5', '7.0', '6.0'),
+('CL004','HV001', N'Giữa kì', '7.5', '5.5', '8.0', '6.5'),
+('CL005','HV001', N'Giữa kì', '8.0', '7.0', '7.5', '5.5'),
+('CL010','HV002', N'Giữa kì', '9.0', '6.0', '5.5', '7/5'),
+('CL013','HV002', N'Giữa kì', '7.0', '2.5', '6.0', '8.0'),
+('CL001','HV001', N'Cuối kì', '6.0', '6.5', '7.5', '8.0'),
+('CL001','HV002', N'Cuối kì', '5.0', '6.5', '6.5', '7.5'),
+('CL003','HV002', N'Cuối kì', '6.5', '7.5', '7.0', '6.0'),
+('CL004','HV001', N'Cuối kì', '7.5', '5.5', '8.0', '6.5'),
+('CL005','HV001', N'Cuối kì', '8.0', '7.0', '7.5', '5.5'),
+('CL010','HV002', N'Cuối kì', '9.0', '6.0', '5.5', '7/5'),
+('CL013','HV002', N'Cuối kì', '7.0', '2.5', '6.0', '8.0')
+
+--Lịch sử đóng tiền học phí, tiền quỹ, tiền mua khóa học,...
+CREATE FUNCTION AUTO_MaGD()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(MaGD) FROM LICHSUDONGTIEN) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(MaGD, 3)) FROM LICHSUDONGTIEN
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'GD00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'GD0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.LICHSUDONGTIEN
+(
+	MaGD char(5) PRIMARY KEY CONSTRAINT MaGD DEFAULT dbo.AUTO_MaGD(),
+	HVID char(5),--tham chieu den STUDENT.HSID
+	MaLop char(5),--tham chieu den MONHOC.MaLop
+	LoaiTien nvarchar(50), --tham chieu toi LOAIPHIEUTHU.LoaiPhieuThu
+	SoTienDong int,
+	Ngay DATE,
+	Gio TIME,
+	--CONSTRAINT PK_LICHSUDONGTIEN PRIMARY KEY (HVID, Ngay, Gio),
+	CONSTRAINT FK_LSDT_HVID FOREIGN KEY (HVID) REFERENCES STUDENT(HVID),
+	CONSTRAINT FK_LSDT_MaLop FOREIGN KEY (MaLop) REFERENCES LOPHOC(MaLop),
+	CONSTRAINT FK_LSDT_LoaiTien FOREIGN KEY (LoaiTien) REFERENCES LOAIPHIEUTHU(LoaiPhieuThu)
+)
+
+INSERT INTO LICHSUDONGTIEN(HVID, MaLop, LoaiTien, SoTienDong, Ngay, Gio) VALUES
+('HV001', 'CL001', N'Học phí', '100000', '2023-1-2', '15:15:00')
+select *from LICHSUDONGTIEN
+
+
+-------------------GIANG VIEN--------------------
+--thong tin giang vien
+CREATE FUNCTION AUTO_GvID()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(GvID) FROM GIANGVIEN) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(GvID, 3)) FROM GIANGVIEN
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'GV00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'GV0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.GIANGVIEN
+(
+	GvID CHAR(5) PRIMARY KEY CONSTRAINT GvID DEFAULT dbo.AUTO_GvID(),	
+	AccID char(5) NOT NULL,--foreign key -> ACC.AccID
+	HOTEN NVARCHAR(100) NULL,
+	GIOITINH NVARCHAR(20) NULL,
+	NGAYSINH DATE NULL,
+	DIACHI NVARCHAR(4000) NULL,
+	SDT CHAR(20) NULL,
+	CMND CHAR(20) NULL,
+	EMAIL CHAR(100) NULL,
+	AVATAR IMAGE NULL,
+	CONSTRAINT FK_GIANGVIEN FOREIGN KEY (AccID) REFERENCES ACCOUNTS_TEACHER(AccID_Tea)
+)
+select *from ACCOUNTS_TEACHER
+INSERT INTO GIANGVIEN(AccID, HOTEN, GIOITINH, NGAYSINH, DIACHI, SDT, EMAIL) VALUES
+('TE001', N'Trần Gia Hùng', N'Nam', '1985-4-16', N'Hồ Chí Ming', '0935434907', 'hung@gmail.com')
+
+
+---------------------------NHAN VIEN----------------------
+--thong tin giang vien
+CREATE FUNCTION AUTO_NVID()
+RETURNS VARCHAR(5)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(5)
+	IF (SELECT COUNT(NVID) FROM NHANVIEN) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(NVID, 3)) FROM NHANVIEN
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'GV00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'GV0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
+CREATE TABLE dbo.NHANVIEN
+(
+	NVID CHAR(5) PRIMARY KEY CONSTRAINT NVID DEFAULT dbo.AUTO_NVID(),
+	--foreign key -> ACC.username
+	ACCID char(5) NOT NULL,
+	HOTEN NVARCHAR(100) NOT NULL,
+	GIOITINH NVARCHAR(20) NULL,
+	NGAYSINH DATE NULL,
+	DIACHI NVARCHAR(4000) NULL,
+	SDT CHAR(20) NULL,
+	CMND CHAR(20) NULL,
+	EMAIL CHAR(100) NULL,
+	AVATAR IMAGE NULL,
+	CONSTRAINT FK_NHANVIEN FOREIGN KEY (ACCID) REFERENCES ACCOUNTS_NHANVIEN(AccID_NV)
+)
+INSERT INTO NHANVIEN(ACCID, HOTEN, GIOITINH, NGAYSINH, DIACHI, SDT, EMAIL) VALUES
+('ID001', N'Trần Thị Hương', N'Nữ', '1995-11-6', N'Hồ Chí Minh', '09334524907', 'huong@gmail.com')
+select *from ACCOUNTS_NHANVIEN
+------Tạo bảng AllPeople( gồm tất cả cả mssv, msgv, msnv trong 1 bảng mới) == select into ...
+SELECT HVID as ID
+INTO ID_ALL
+FROM STUDENT
+SELECT STUDENT.HVID, GIANGVIEN.GvID, NHANVIEN.NVID
+INTO ID_ALL
+FROM STUDENT, GIANGVIEN, NHANVIEN
+drop table ID_ALL
+select *from ID_ALL
+-----------------------------GV + NV-------------------------
+--Bảng lương
+CREATE TABLE dbo.BANGLUONG
+(
+	ID char(20) PRIMARY KEY, --tham chieu toi ALlPeople.ID
+	Luong int,
+	PhuCap int,
+	TienThuong int,
+	TienBaoHiem int
+)
+
+--Bảng nhận tiền lương,thưởng, ứng lương...
+CREATE TABLE dbo.LICHSUGIAODICH
+(
+	ID char(20),
+	LoaiTienKhac nvarchar(50),-- tham chieu toi LOAIPHIEUCHI.LoaiPhieuChi
+	SoTienGiaoDich int,
+	Ngay DATE,
+	Gio TIME
+	CONSTRAINT PK_LICHSUGIAODICH PRIMARY KEY (ID, Ngay, Gio)
+)
+
+---------------------------THU CHI----------------------
+
+--Bảng thu phiếu
+CREATE TABLE dbo.PHIEUTHU
+(
+	MaPT char(20) PRIMARY KEY,
+	LoaiPT nvarchar(50), --tham chieu toi LOAIPHIEUTHU.LoaiPhieuThu
+	NguoiThu nvarchar(100) NULL--tham chieu toi NHANVIEN.HOTEN (nếu có)
+
+)
+--Bảng phiếu chi
+CREATE TABLE dbo.PHIEUCHI
+(
+	MaPC char(20) PRIMARY KEY,
+	LoaiPC nvarchar(50), --tham chieu toi LOAIPHIEUCHI.LoaiPhieuChi
+)
